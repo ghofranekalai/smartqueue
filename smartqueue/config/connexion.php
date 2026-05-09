@@ -2,19 +2,24 @@
 // ============================================================
 // SmartQueue – Connexion PDO à la base de données MySQL
 // ============================================================
-$host = "localhost";
-$db   = "smartqueue_db";
-$user = "root";      // à adapter selon votre configuration
-$pass = "";          // mot de passe MySQL
+<?php
+// config/connexion.php
+
+$host = getenv('DB_HOST');       // e.g. ep-mute-wildflower-xxx.us-east-2.db.netlify.com
+$dbname = getenv('DB_NAME');     // netlifydb
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASS');
 
 try {
     $conn = new PDO(
-        "mysql:host=$host;dbname=$db;charset=utf8mb4",
+        "pgsql:host=$host;port=5432;dbname=$dbname;sslmode=require",
         $user,
-        $pass
+        $pass,
+        [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
     );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
